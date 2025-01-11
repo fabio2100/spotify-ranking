@@ -11,12 +11,12 @@ const fetchData = async (type, term) => {
 const getData = async (token) => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     const data = {
-        "tracksLong": await fetchData('tracks', 'long'),
-        "tracksMedium": await fetchData('tracks', 'medium'),
-        "tracksShort": await fetchData('tracks', 'short'),
-        "artistsLong": await fetchData('artists', 'long'),
-        "artistsMedium": await fetchData('artists', 'medium'),
-        "artistsShort": await fetchData('artists', 'short'),
+        tracksLong: await fetchData('tracks', 'long'),
+        tracksMedium: await fetchData('tracks', 'medium'),
+        tracksShort: await fetchData('tracks', 'short'),
+        artistsLong: await fetchData('artists', 'long'),
+        artistsMedium: await fetchData('artists', 'medium'),
+        artistsShort: await fetchData('artists', 'short'),
     };
 
     return data;

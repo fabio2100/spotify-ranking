@@ -52,21 +52,20 @@ export async function GET(req, res) {
     const queryValues = [userId];
     const dbResponse = await client.query(queryText, queryValues);
 
-    console.log(`User ID: ${userId}`);
-    console.log(dbResponse.rows);
     if (dbResponse.rows.length === 0) {
       //primer ingreso, buscar las tracks y despues guardar todo con cambio = 0
       console.log("new user");
       const data = await getData(access_token);
-      console.log(data);
-      client.query(
-        "INSERT INTO user_data_spotify (data) VALUES (?)",
-        [JSON.stringify(data)],
-        (error, results) => {
-          if (error) throw error;
-          console.log("Data saved:", results);
-        }
-      );
+      try {
+        const queryText = 'INSERT INTO user_data_spotify (user_name, data) VALUES ($1, $2) RETURNING *';
+        const queryValues = [userId, JSON.stringify(data)];
+        const res = await client.query(queryText, queryValues);
+        console.log('Inserted:', res.rows[0]);
+    } catch (error) {
+        console.error('Error inserting data:', error);
+    } finally {
+        client.release();
+    }
     } else {
       //el usuario existe, comprobar si hay el guardado tiene mas de una semana, si NO solo enviar las tracks, si SI buscar las tracks y despues guardar todo sin cambios
       console.log("user exists");
