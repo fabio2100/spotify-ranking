@@ -32,8 +32,7 @@ export async function GET(req, res) {
     );
 
     const { access_token, refresh_token } = response.data;
-    cookieStore.set("spotify_access_token", access_token, { maxAge: 0 });
-    cookieStore.set("spotify_refresh_token", refresh_token, { maxAge: 0 });
+
 
     const userProfileResponse = await axios.get(
       "https://api.spotify.com/v1/me",
@@ -53,19 +52,19 @@ export async function GET(req, res) {
     const dbResponse = await client.query(queryText, queryValues);
 
     if (dbResponse.rows.length === 0) {
-      //primer ingreso, buscar las tracks y despues guardar todo con cambio = 0
       console.log("new user");
-      const data = await getData(access_token);
+      const data = await getData(access_token,false);
       try {
-        const queryText = 'INSERT INTO user_data_spotify (user_name, data) VALUES ($1, $2) RETURNING *';
+        const queryText =
+          "INSERT INTO user_data_spotify (user_name, data) VALUES ($1, $2) RETURNING *";
         const queryValues = [userId, JSON.stringify(data)];
         const res = await client.query(queryText, queryValues);
-        console.log('Inserted:', res.rows[0]);
-    } catch (error) {
-        console.error('Error inserting data:', error);
-    } finally {
+        console.log("Inserted:", res.rows[0]);
+      } catch (error) {
+        console.error("Error inserting data:", error);
+      } finally {
         client.release();
-    }
+      }
     } else {
       //el usuario existe, comprobar si hay el guardado tiene mas de una semana, si NO solo enviar las tracks, si SI buscar las tracks y despues guardar todo sin cambios
       console.log("user exists");
@@ -73,12 +72,12 @@ export async function GET(req, res) {
       if (actualizar) {
         //actualizar los cambios en las tracks
         console.log("actualizar");
-      } else {
-        //solo enviar las tracks
-        console.log("solo enviar");
       }
     }
 
+    cookieStore.set("spotify_access_token", access_token, { maxAge: 3600 });
+    cookieStore.set("spotify_refresh_token", refresh_token);
+    cookieStore.set("user_name", userId);
     redirectPath = `/home`;
   } catch (error) {
     console.error(

@@ -5,7 +5,7 @@ const apiUrl = 'https://api.spotify.com/v1/me/top/';
 
 const fetchData = async (type, term) => {
     const response = await axios.get(`${apiUrl}${type}?time_range=${term}_term&limit=50`);
-    return response.data.items.map(item => ([item.id, 0]));
+    return response.data.items.map(item => ([item.id, false]));
 };
 
 const getData = async (token) => {
