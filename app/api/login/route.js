@@ -1,7 +1,7 @@
 import axios from "axios";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import pool from "../../../db"; // Importamos el pool de conexiones
+import pool from "../../../db";
 import { getData,updateData } from "../../helper/getSpotifyData";
 
 export async function GET(req, res) {
