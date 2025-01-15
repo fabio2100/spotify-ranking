@@ -27,6 +27,8 @@ export default function HomePage() {
   const [period, setPeriod] = useState("short");
   const [itemsData, setItemsData] = useState([]);
   const [accessToken, setAccessToken] = useState();
+  const [isLoading,setIsLoading] = useState(false);
+  const [unabledRequest,setUnabledRequest] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +56,7 @@ export default function HomePage() {
 
   useEffect(() => {
     const fetchItemData = async () => {
+      setUnabledRequest(true);
       if (!spotifyData) return;
 
       const key = `${type}${period.charAt(0).toUpperCase() + period.slice(1)}`;
@@ -75,7 +78,10 @@ export default function HomePage() {
       try {
         const responses = await Promise.all(requests);
         setItemsData(responses.map((response) => response.data));
-        console.log(itemsData);
+        setIsLoading(false)
+        setTimeout(()=>{
+          setUnabledRequest(false)
+        },5000)
       } catch (error) {
         console.error("Error fetching item data:", error);
       }
@@ -86,34 +92,44 @@ export default function HomePage() {
 
   const handleTypeChange = (e) => {
     setType(e.target.value);
+    setIsLoading(true)
   };
 
   const handlePeriodChange = (e) => {
     setPeriod(e.target.value);
+    setIsLoading(true)
   };
 
   const renderList = () => {
-    if (!itemsData.length) return <p>Loading data...</p>;
+    if (!itemsData.length || isLoading) return <p>Loading data...</p>;
     return (
       <>
         <List>
           {itemsData.map((item, index) => {
-            console.log(item)
-            return <ListItem key={item.index}
-              secondaryAction={
-                <IconButton edge="end" aria-label="delete">
-                  {index+1}
-                </IconButton>
-              }
-            >
-              <ListItemAvatar>
-                <Avatar>12</Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary="Single-line item"
-                secondary="Secondary text"
-              />
-            </ListItem>;
+            console.log(item);
+            const primaryText =  item.name;
+            const secondaryText =
+              type === "tracks"
+                ? item.artists.map((artist) => artist.name).join(", ")
+                : null;
+                console.log(secondaryText)
+            return (
+              <ListItem
+                key={index}
+                secondaryAction={
+                  <IconButton edge="end" aria-label="delete">
+                    {index + 1}
+                  </IconButton>
+                }
+              >
+                {" "}
+                <ListItemAvatar>
+                  {" "}
+                  <Avatar>{index + 1}</Avatar>{" "}
+                </ListItemAvatar>{" "}
+                <ListItemText primary={primaryText} secondary={secondaryText} />{" "}
+              </ListItem>
+            );
           })}
         </List>
       </>
@@ -132,14 +148,14 @@ export default function HomePage() {
             <h2>Spotify Data</h2>
             <div>
               <label htmlFor="type">Type: </label>
-              <select id="type" value={type} onChange={handleTypeChange}>
+              <select disabled={unabledRequest}   id="type" value={type} onChange={handleTypeChange}>
                 <option value="tracks">Tracks</option>
                 <option value="artists">Artists</option>
               </select>
             </div>
             <div>
               <label htmlFor="period">Period: </label>
-              <select id="period" value={period} onChange={handlePeriodChange}>
+              <select disabled={unabledRequest}  id="period" value={period} onChange={handlePeriodChange}>
                 <option value="short">Short</option>
                 <option value="medium">Medium</option>
                 <option value="long">Long</option>
