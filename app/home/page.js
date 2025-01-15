@@ -29,6 +29,7 @@ export default function HomePage() {
   const [accessToken, setAccessToken] = useState();
   const [isLoading,setIsLoading] = useState(false);
   const [unabledRequest,setUnabledRequest] = useState(false);
+  const [key,setKey] = useState('tracksShort');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +62,7 @@ export default function HomePage() {
 
       const key = `${type}${period.charAt(0).toUpperCase() + period.slice(1)}`;
       const data = spotifyData[key];
+      setKey(key);
 
       const requests = data.map((item) => {
         const id = item[0];
@@ -81,7 +83,7 @@ export default function HomePage() {
         setIsLoading(false)
         setTimeout(()=>{
           setUnabledRequest(false)
-        },5000)
+        },2000)
       } catch (error) {
         console.error("Error fetching item data:", error);
       }
@@ -112,13 +114,12 @@ export default function HomePage() {
               type === "tracks"
                 ? item.artists.map((artist) => artist.name).join(", ")
                 : null;
-                console.log(secondaryText)
             return (
               <ListItem
                 key={index}
                 secondaryAction={
                   <IconButton edge="end" aria-label="delete">
-                    {index + 1}
+                    {spotifyData[key][index][1]}
                   </IconButton>
                 }
               >
