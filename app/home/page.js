@@ -5,6 +5,10 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import  {FiberNew}  from "@mui/icons-material";
+import { TbCircleArrowUpFilled, TbCircleArrowDownFilled } from "react-icons/tb";
+import { FaEquals } from "react-icons/fa";
+
 import {
   Avatar,
   IconButton,
@@ -114,19 +118,34 @@ export default function HomePage() {
               type === "tracks"
                 ? item.artists.map((artist) => artist.name).join(", ")
                 : null;
+            let valueAEvaluar = spotifyData[key][index][1];
+            let iconToShow;
+            switch(valueAEvaluar){
+              case false:
+                iconToShow = <FiberNew />
+                break;
+              case 0:
+                iconToShow = <FaEquals />
+                console.log(0)
+                break;
+              default:
+                iconToShow = <>{valueAEvaluar>0?<TbCircleArrowUpFilled style={{color:'#078300'}} />:<TbCircleArrowDownFilled style={{color:'#b80000'}}/>} {Math.abs(valueAEvaluar)}</>
+                console.log(">0")
+                break;
+            } 
             return (
               <ListItem
                 key={index}
                 secondaryAction={
                   <IconButton edge="end" aria-label="delete">
-                    {spotifyData[key][index][1]}
+                    {iconToShow}
                   </IconButton>
                 }
               >
                 {" "}
                 <ListItemAvatar>
                   {" "}
-                  <Avatar>{index + 1}</Avatar>{" "}
+                  <Avatar style={{backgroundColor:'#0BAD02', color:'white'}}>{index + 1}</Avatar>{" "}
                 </ListItemAvatar>{" "}
                 <ListItemText primary={primaryText} secondary={secondaryText} />{" "}
               </ListItem>
