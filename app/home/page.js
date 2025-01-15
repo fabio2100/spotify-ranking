@@ -54,6 +54,7 @@ export default function HomePage() {
       try {
         const responses = await Promise.all(requests);
         setItemsData(responses.map(response => response.data));
+        console.log(itemsData)
       } catch (error) {
         console.error('Error fetching item data:', error);
       }
@@ -72,8 +73,8 @@ export default function HomePage() {
 
   const renderData = () => {
     if (!itemsData.length) return <p>Loading data...</p>;
-
-    return (
+    
+    return (<>
       <ul>
         {itemsData.map((item, index) => (
           <li key={index}>
@@ -81,6 +82,7 @@ export default function HomePage() {
           </li>
         ))}
       </ul>
+      </>
     );
   };
 
