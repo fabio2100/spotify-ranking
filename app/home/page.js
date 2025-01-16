@@ -160,8 +160,6 @@ export default function HomePage() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <div>
-        <h1>Home</h1>
-        <p>You have successfully logged in with Spotify!</p>
         {error && <p>Error: {error}</p>}
         {spotifyData ? (
           <div>

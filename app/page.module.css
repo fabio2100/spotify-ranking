@@ -16,6 +16,11 @@
   font-family: var(--font-geist-sans);
 }
 
+.body-main{
+  display: flex;
+  align-items: center;
+}
+
 @media (prefers-color-scheme: dark) {
   .page {
     --gray-rgb: 255, 255, 255;
@@ -165,4 +170,26 @@ a.secondary {
   .logo {
     filter: invert();
   }
+}
+
+.customButton {
+  background-color: #0BAD02;
+  color: black;
+  font-weight: 550;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  cursor: pointer;
+
+}
+.buttonText {
+  font-size: 16px;
+}
+
+.customButton:hover {
+  background-color: #067400;
 }
