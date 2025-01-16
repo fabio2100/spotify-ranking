@@ -1,0 +1,21 @@
+.divMain{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+
+.divSelects{
+  justify-content: space-between;
+}
+
+.select{
+  background-color: rgb(11, 173, 2);
+  color: white;
+  margin-left: 2em;
+  margin-right: 2em;
+  padding: 1em;
+  border-radius: 6px;
+  font-weight: 700;
+}

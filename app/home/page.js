@@ -5,12 +5,14 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import  {FiberNew}  from "@mui/icons-material";
+import { FiberNew } from "@mui/icons-material";
 import { TbCircleArrowUpFilled, TbCircleArrowDownFilled } from "react-icons/tb";
 import { FaEquals } from "react-icons/fa";
+import styles from "./styles.module.css";
 
 import {
   Avatar,
+  CircularProgress,
   IconButton,
   List,
   ListItem,
@@ -31,9 +33,9 @@ export default function HomePage() {
   const [period, setPeriod] = useState("short");
   const [itemsData, setItemsData] = useState([]);
   const [accessToken, setAccessToken] = useState();
-  const [isLoading,setIsLoading] = useState(false);
-  const [unabledRequest,setUnabledRequest] = useState(false);
-  const [key,setKey] = useState('tracksShort');
+  const [isLoading, setIsLoading] = useState(false);
+  const [unabledRequest, setUnabledRequest] = useState(false);
+  const [key, setKey] = useState("tracksShort");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,10 +86,10 @@ export default function HomePage() {
       try {
         const responses = await Promise.all(requests);
         setItemsData(responses.map((response) => response.data));
-        setIsLoading(false)
-        setTimeout(()=>{
-          setUnabledRequest(false)
-        },2000)
+        setIsLoading(false);
+        setTimeout(() => {
+          setUnabledRequest(false);
+        }, 2000);
       } catch (error) {
         console.error("Error fetching item data:", error);
       }
@@ -98,41 +100,51 @@ export default function HomePage() {
 
   const handleTypeChange = (e) => {
     setType(e.target.value);
-    setIsLoading(true)
+    setIsLoading(true);
   };
 
   const handlePeriodChange = (e) => {
     setPeriod(e.target.value);
-    setIsLoading(true)
+    setIsLoading(true);
   };
 
   const renderList = () => {
-    if (!itemsData.length || isLoading) return <p>Loading data...</p>;
+    if (!itemsData.length || isLoading)
+      return <CircularProgress color="success" />;
     return (
       <>
         <List>
           {itemsData.map((item, index) => {
             console.log(item);
-            const primaryText =  item.name;
+            const primaryText = item.name;
             const secondaryText =
               type === "tracks"
                 ? item.artists.map((artist) => artist.name).join(", ")
                 : null;
             let valueAEvaluar = spotifyData[key][index][1];
             let iconToShow;
-            switch(valueAEvaluar){
+            switch (valueAEvaluar) {
               case false:
-                iconToShow = <FiberNew />
+                iconToShow = <FiberNew />;
                 break;
               case 0:
-                iconToShow = <FaEquals />
-                console.log(0)
+                iconToShow = <FaEquals />;
+                console.log(0);
                 break;
               default:
-                iconToShow = <>{valueAEvaluar>0?<TbCircleArrowUpFilled style={{color:'#078300'}} />:<TbCircleArrowDownFilled style={{color:'#b80000'}}/>} {Math.abs(valueAEvaluar)}</>
-                console.log(">0")
+                iconToShow = (
+                  <>
+                    {valueAEvaluar > 0 ? (
+                      <TbCircleArrowUpFilled style={{ color: "#078300" }} />
+                    ) : (
+                      <TbCircleArrowDownFilled style={{ color: "#b80000" }} />
+                    )}{" "}
+                    {Math.abs(valueAEvaluar)}
+                  </>
+                );
+                console.log(">0");
                 break;
-            } 
+            }
             return (
               <ListItem
                 key={index}
@@ -145,7 +157,11 @@ export default function HomePage() {
                 {" "}
                 <ListItemAvatar>
                   {" "}
-                  <Avatar style={{backgroundColor:'#0BAD02', color:'white'}}>{index + 1}</Avatar>{" "}
+                  <Avatar
+                    style={{ backgroundColor: "#0BAD02", color: "white" }}
+                  >
+                    {index + 1}
+                  </Avatar>{" "}
                 </ListItemAvatar>{" "}
                 <ListItemText primary={primaryText} secondary={secondaryText} />{" "}
               </ListItem>
@@ -159,21 +175,27 @@ export default function HomePage() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <div>
+      <>
         {error && <p>Error: {error}</p>}
         {spotifyData ? (
-          <div>
+          <div className={styles.divMain}>
             <h2>Spotify Data</h2>
-            <div>
-              <label htmlFor="type">Type: </label>
-              <select disabled={unabledRequest}   id="type" value={type} onChange={handleTypeChange}>
+            <div className={styles.divSelects}>
+              <select className={styles.select}
+                disabled={unabledRequest}
+                id="type"
+                value={type}
+                onChange={handleTypeChange}
+              >
                 <option value="tracks">Tracks</option>
                 <option value="artists">Artists</option>
               </select>
-            </div>
-            <div>
-              <label htmlFor="period">Period: </label>
-              <select disabled={unabledRequest}  id="period" value={period} onChange={handlePeriodChange}>
+              <select className={styles.select}
+                disabled={unabledRequest}
+                id="period"
+                value={period}
+                onChange={handlePeriodChange}
+              >
                 <option value="short">Short</option>
                 <option value="medium">Medium</option>
                 <option value="long">Long</option>
@@ -182,9 +204,18 @@ export default function HomePage() {
             {renderList()}
           </div>
         ) : (
-          <p>Loading...</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <CircularProgress color="success" />
+          </div>
         )}
-      </div>
+      </>
     </ThemeProvider>
   );
 }

@@ -16,10 +16,6 @@
   font-family: var(--font-geist-sans);
 }
 
-.body-main{
-  display: flex;
-  align-items: center;
-}
 
 @media (prefers-color-scheme: dark) {
   .page {
