@@ -9,7 +9,7 @@ import { FiberNew } from "@mui/icons-material";
 import { TbCircleArrowUpFilled, TbCircleArrowDownFilled } from "react-icons/tb";
 import { FaEquals } from "react-icons/fa";
 import styles from "./styles.module.css";
-
+import { PlayCircleFilledWhite } from "@mui/icons-material";
 import {
   Avatar,
   CircularProgress,
@@ -151,6 +151,7 @@ export default function HomePage() {
                 key={index}
                 secondaryAction={
                   <IconButton edge="end" aria-label="delete">
+                    <PlayCircleFilledWhite className={styles.playIcon}/>
                     {iconToShow}
                   </IconButton>
                 }

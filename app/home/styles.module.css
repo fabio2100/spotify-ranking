@@ -27,3 +27,11 @@
 .listItem:hover{
   background-color: #303030;
 }
+
+.listItem:hover .playIcon{
+  display: block;
+}
+
+.playIcon{
+  display: none;
+}
