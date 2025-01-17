@@ -98,8 +98,8 @@ export async function GET(req, res) {
     }
 
     cookieStore.set("spotify_access_token", access_token, { maxAge: 3600 });
-    cookieStore.set("spotify_refresh_token", refresh_token);
-    cookieStore.set("user_name", userId);
+    cookieStore.set("spotify_refresh_token", refresh_token, { maxAge: 604800});
+    cookieStore.set("user_name", userId , {maxAge: 604800});
     redirectPath = `/home`;
   } catch (error) {
     console.error(
