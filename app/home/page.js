@@ -147,6 +147,7 @@ export default function HomePage() {
             }
             return (
               <ListItem
+              className={styles.listItem}
                 key={index}
                 secondaryAction={
                   <IconButton edge="end" aria-label="delete">

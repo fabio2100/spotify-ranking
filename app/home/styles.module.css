@@ -19,3 +19,11 @@
   border-radius: 6px;
   font-weight: 700;
 }
+
+.listItem{
+  border-radius: 12px;
+}
+
+.listItem:hover{
+  background-color: #303030;
+}
