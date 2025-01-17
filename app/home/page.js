@@ -108,6 +108,10 @@ export default function HomePage() {
     setIsLoading(true);
   };
 
+  const handlePlay = (href) => {
+    window.open(href, '_blank');
+  }
+
   const renderList = () => {
     if (!itemsData.length || isLoading)
       return <CircularProgress color="success" />;
@@ -129,7 +133,6 @@ export default function HomePage() {
                 break;
               case 0:
                 iconToShow = <FaEquals />;
-                console.log(0);
                 break;
               default:
                 iconToShow = (
@@ -142,7 +145,6 @@ export default function HomePage() {
                     {Math.abs(valueAEvaluar)}
                   </>
                 );
-                console.log(">0");
                 break;
             }
             return (
@@ -151,7 +153,7 @@ export default function HomePage() {
                 key={index}
                 secondaryAction={
                   <IconButton edge="end" aria-label="delete">
-                    <PlayCircleFilledWhite className={styles.playIcon}/>
+                    <PlayCircleFilledWhite className={styles.playIcon} onClick={()=>{handlePlay(item.external_urls.spotify)}}/>
                     {iconToShow}
                   </IconButton>
                 }
