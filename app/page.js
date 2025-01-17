@@ -1,6 +1,6 @@
 // /pages/index.js
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import styles from './page.module.css'
@@ -12,7 +12,9 @@ const darkTheme = createTheme({
 });
 
 export default function Home() {
+  const [isDisabled,setIsDisabled] = useState(false)
   const redirectToSpotify = () => {
+    setIsDisabled(true)
     const scope = "user-top-read";
     const url = `https://accounts.spotify.com/authorize?response_type=code&client_id=${
       process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID
@@ -27,7 +29,7 @@ export default function Home() {
       <CssBaseline />
       <div className={styles.page}>
         <h1>Spotify ranking</h1>
-        <button onClick={redirectToSpotify} className={styles.customButton}>
+        <button onClick={redirectToSpotify} className={styles.customButton} disabled={isDisabled}>
           <span className={styles.buttonText}>SIGN WITH </span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
               <path

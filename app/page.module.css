@@ -189,3 +189,7 @@ a.secondary {
 .customButton:hover {
   background-color: #067400;
 }
+
+.customButton:disabled{
+  background-color: #067400;
+}
