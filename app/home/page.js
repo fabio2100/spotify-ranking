@@ -19,6 +19,7 @@ import {
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 const darkTheme = createTheme({
   palette: {
@@ -27,6 +28,7 @@ const darkTheme = createTheme({
 });
 
 export default function HomePage() {
+  const router = useRouter();
   const [spotifyData, setSpotifyData] = useState(null);
   const [error, setError] = useState(null);
   const [type, setType] = useState("tracks");
@@ -36,6 +38,43 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [unabledRequest, setUnabledRequest] = useState(false);
   const [key, setKey] = useState("tracksShort");
+  const [checkedAuth, setCheckedAuth] = useState(false);
+
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user_name = Cookies.get("user_name");
+      if (!user_name) {
+        router.push("/");
+        return;
+      }
+      const accessToken = Cookies.get("spotify_access_token");
+      if (accessToken) {
+        setCheckedAuth(true);
+        return;
+      }
+
+      const refreshToken = Cookies.get("spotify_refresh_token");
+      if (refreshToken) {
+        try {
+          const response = await axios.post("/api/refreshToken", {
+            refresh_token: refreshToken,
+          });
+          Cookies.set("spotify_access_token", response.data.access_token, {
+            expires: 1 / 24,
+          });
+          setCheckedAuth(true);
+        } catch (error) {
+          console.error("Error fetching access token:", error);
+          router.push("/");
+        }
+      } else {
+        router.push("/");
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,7 +98,7 @@ export default function HomePage() {
     };
 
     fetchData();
-  }, []);
+  }, [checkedAuth]);
 
   useEffect(() => {
     const fetchItemData = async () => {

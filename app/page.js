@@ -21,6 +21,11 @@ export default function Home() {
   const router = useRouter();
 
   const checkAuth = async () => {
+    const user_name = Cookies.get('user_name');
+    if(!user_name){
+      setIsLoading(false)
+      return;
+    }
     const accessToken = Cookies.get('spotify_access_token');
     if (accessToken) {
       router.push('/home');
