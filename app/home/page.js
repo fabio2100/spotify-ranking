@@ -39,6 +39,7 @@ export default function HomePage() {
   const [unabledRequest, setUnabledRequest] = useState(false);
   const [key, setKey] = useState("tracksShort");
   const [checkedAuth, setCheckedAuth] = useState(false);
+  const [dataFetched, setDataFetched] = useState(false);
 
 
   useEffect(() => {
@@ -87,6 +88,7 @@ export default function HomePage() {
       setAccessToken(Cookies.get("spotify_access_token"));
 
       try {
+        
         console.log('estamos aca ????')
         const response = await axios.post("/api/userTracks", {
           user_name: userName,
@@ -98,8 +100,10 @@ export default function HomePage() {
         setError("Failed to fetch data");
       }
     };
-
-    fetchData();
+    if(!dataFetched){
+      fetchData();
+      setDataFetched(true);    
+    }
   }, [checkedAuth]);
 
   useEffect(() => {
