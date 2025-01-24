@@ -87,8 +87,10 @@ export default function HomePage() {
       setAccessToken(Cookies.get("spotify_access_token"));
 
       try {
+        console.log('estamos aca ????')
         const response = await axios.post("/api/userTracks", {
           user_name: userName,
+          access_token: Cookies.get("spotify_access_token"),
         });
         setSpotifyData(response.data);
       } catch (error) {
@@ -158,7 +160,6 @@ export default function HomePage() {
       <>
         <List>
           {itemsData.map((item, index) => {
-            console.log(item);
             const primaryText = item.name;
             const secondaryText =
               type === "tracks"

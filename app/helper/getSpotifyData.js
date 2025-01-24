@@ -1,12 +1,18 @@
 import axios from "axios";
+import pool from "../../db";
 
 const apiUrl = "https://api.spotify.com/v1/me/top/";
 
 const fetchData = async (type, term) => {
-  const response = await axios.get(
-    `${apiUrl}${type}?time_range=${term}_term&limit=${process.env.NEXT_PUBLIC_SPOTIFY_LIMIT}`
-  );
-  return response.data.items.map((item) => [item.id, false]);
+  try {
+    const response = await axios.get(
+      `${apiUrl}${type}?time_range=${term}_term&limit=${process.env.NEXT_PUBLIC_SPOTIFY_LIMIT}`
+    );
+    return response.data.items.map((item) => [item.id, false]);
+  } catch (error) {
+    
+  }
+
 };
 
 const getData = async (token) => {
@@ -34,7 +40,7 @@ const updateData = async (token, dataDb) => {
     artistsShort: await fetchData("artists", "short"),
   };
 
-  actualizarCambios(dataDb,dataSpotify)
+  actualizarCambios(dataDb, dataSpotify);
 
   return dataSpotify;
 };
@@ -59,4 +65,19 @@ function actualizarCambios(dataDB, dataSpotify) {
   }
 }
 
-module.exports = { getData, updateData };
+const prevUpdate = async (userId, access_token) => {
+  // Conectar a PostgreSQL y realizar la consulta
+  const client = await pool.connect();
+  const queryText = "SELECT data FROM user_data_spotify WHERE user_name = $1;";
+  const queryValues = [userId];
+  const res = await client.query(queryText, queryValues);
+  const dataDb = res.rows[0].data;
+  const updated = await updateData(access_token, dataDb);
+  const queryUpdated =
+    "UPDATE user_data_spotify SET data = $2, created_at = CURRENT_TIMESTAMP WHERE user_name = $1";
+  const queryUpdatedValues = [userId, JSON.stringify(updated)];
+  const resUpdate = await client.query(queryUpdated, queryUpdatedValues);
+  console.log("updated: ", resUpdate.rows);
+};
+
+module.exports = { getData, updateData, prevUpdate };

@@ -1,20 +1,28 @@
 // pages/api/getSpotifyData.js
 import pool from "../../../db"; 
 import { NextResponse } from 'next/server';
+import { prevUpdate } from "../../helper/getSpotifyData";
 
 
 export async function POST(req) {
-  if (req.method !== 'POST') {
-    return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
-  }
 
-  const { user_name } = await req.json();
+  const { user_name,access_token } = await req.json();
 
   if (!user_name) {
     return NextResponse.json({ error: 'User name is required' }, { status: 400 });
   }
+  if(!access_token){
+    return NextResponse.json({ error: 'Access token is required' }, { status: 400 });  
+  }
 
-  try {
+  try {    
+    const queryTextFirst = `SELECT data, (NOW() - INTERVAL '10 seconds' >= created_at) AS actualizar FROM user_data_spotify WHERE user_name = $1;`;
+    const queryValuesFirst = [user_name];
+    const dbResponse = await pool.query(queryTextFirst, queryValuesFirst);
+    const actualizar = dbResponse.rows[0].actualizar;
+    if(actualizar){
+      prevUpdate(user_name,access_token);
+    }
     const queryText = 'SELECT data FROM user_data_spotify WHERE user_name = $1';
     const queryValues = [user_name];
 

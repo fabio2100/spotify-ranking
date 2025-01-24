@@ -2,7 +2,7 @@ import axios from "axios";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import pool from "../../../db";
-import { getData,updateData } from "../../helper/getSpotifyData";
+import { getData,prevUpdate } from "../../helper/getSpotifyData";
 
 export async function GET(req, res) {
   const cookieStore = await cookies();
@@ -47,10 +47,9 @@ export async function GET(req, res) {
 
     // Conectar a PostgreSQL y realizar la consulta
     const client = await pool.connect();
-    const queryText = `SELECT data, (NOW() - INTERVAL '7 days' >= created_at) AS actualizar FROM user_data_spotify WHERE user_name = $1;`;
+    const queryText = `SELECT data, (NOW() - INTERVAL '10 seconds' >= created_at) AS actualizar FROM user_data_spotify WHERE user_name = $1;`;
     const queryValues = [userId];
     const dbResponse = await client.query(queryText, queryValues);
-
     let data;
 
     if(dbResponse.rows.length === 0 || dbResponse.rows[0].actualizar){
@@ -79,16 +78,7 @@ export async function GET(req, res) {
         //actualizar los cambios en las tracks
         console.log("actualizar");
         try {
-          const queryText =
-            "SELECT data FROM user_data_spotify WHERE user_name = $1;";
-          const queryValues = [userId];
-          const res = await client.query(queryText, queryValues);
-          const dataDb = res.rows[0].data;
-          const updated = await updateData(access_token,dataDb);
-          const queryUpdated = "UPDATE user_data_spotify SET data = $2, created_at = CURRENT_TIMESTAMP WHERE user_name = $1";
-          const queryUpdatedValues = [userId,JSON.stringify(updated)];
-          const resUpdate = await client.query(queryUpdated, queryUpdatedValues)
-          console.log('updated: ', resUpdate.rows)
+          prevUpdate(userId, access_token);
         } catch (error) {
           console.error("Error inserting data:", error);
         } finally {
