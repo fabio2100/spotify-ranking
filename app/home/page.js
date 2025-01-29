@@ -41,7 +41,6 @@ export default function HomePage() {
   const [checkedAuth, setCheckedAuth] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
 
-
   useEffect(() => {
     const checkAuth = async () => {
       const user_name = Cookies.get("user_name");
@@ -64,6 +63,10 @@ export default function HomePage() {
           Cookies.set("spotify_access_token", response.data.access_token, {
             expires: 1 / 24,
           });
+          console.log(
+            "Access token refreshed",
+            Cookies.get("spotify_access_token")
+          );
           setCheckedAuth(true);
         } catch (error) {
           console.error("Error fetching access token:", error);
@@ -73,7 +76,6 @@ export default function HomePage() {
         router.push("/");
       }
     };
-
     checkAuth();
   }, []);
 
@@ -83,13 +85,8 @@ export default function HomePage() {
       if (!userName) {
         setError("User name cookie is missing");
         return;
-      }
-
-      setAccessToken(Cookies.get("spotify_access_token"));
-
+      }    
       try {
-        
-        console.log('estamos aca ????')
         const response = await axios.post("/api/userTracks", {
           user_name: userName,
           access_token: Cookies.get("spotify_access_token"),
@@ -100,9 +97,9 @@ export default function HomePage() {
         setError("Failed to fetch data");
       }
     };
-    if(!dataFetched){
+    if (!dataFetched && checkedAuth) {
       fetchData();
-      setDataFetched(true);    
+      setDataFetched(true);
     }
   }, [checkedAuth]);
 
@@ -154,8 +151,8 @@ export default function HomePage() {
   };
 
   const handlePlay = (href) => {
-    window.open(href, '_blank');
-  }
+    window.open(href, "_blank");
+  };
 
   const renderList = () => {
     if (!itemsData.length || isLoading)
@@ -193,11 +190,16 @@ export default function HomePage() {
             }
             return (
               <ListItem
-              className={styles.listItem}
+                className={styles.listItem}
                 key={index}
                 secondaryAction={
                   <IconButton edge="end" aria-label="delete">
-                    <PlayCircleFilledWhite className={styles.playIcon} onClick={()=>{handlePlay(item.external_urls.spotify)}}/>
+                    <PlayCircleFilledWhite
+                      className={styles.playIcon}
+                      onClick={() => {
+                        handlePlay(item.external_urls.spotify);
+                      }}
+                    />
                     {iconToShow}
                   </IconButton>
                 }
@@ -229,7 +231,8 @@ export default function HomePage() {
           <div className={styles.divMain}>
             <h2>Spotify Data</h2>
             <div className={styles.divSelects}>
-              <select className={styles.select}
+              <select
+                className={styles.select}
                 disabled={unabledRequest}
                 id="type"
                 value={type}
@@ -238,7 +241,8 @@ export default function HomePage() {
                 <option value="tracks">Tracks</option>
                 <option value="artists">Artists</option>
               </select>
-              <select className={styles.select}
+              <select
+                className={styles.select}
                 disabled={unabledRequest}
                 id="period"
                 value={period}

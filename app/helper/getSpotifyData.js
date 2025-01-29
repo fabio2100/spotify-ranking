@@ -77,7 +77,7 @@ const prevUpdate = async (userId, access_token) => {
     "UPDATE user_data_spotify SET data = $2, created_at = CURRENT_TIMESTAMP WHERE user_name = $1";
   const queryUpdatedValues = [userId, JSON.stringify(updated)];
   const resUpdate = await client.query(queryUpdated, queryUpdatedValues);
-  console.log("updated: ", resUpdate.rows);
+  console.log("updated");
 };
 
 module.exports = { getData, updateData, prevUpdate };

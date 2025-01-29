@@ -7,7 +7,6 @@ import { prevUpdate } from "../../helper/getSpotifyData";
 export async function POST(req) {
 
   const { user_name,access_token } = await req.json();
-
   if (!user_name) {
     return NextResponse.json({ error: 'User name is required' }, { status: 400 });
   }
@@ -16,7 +15,7 @@ export async function POST(req) {
   }
 
   try {    
-    const queryTextFirst = `SELECT data, (NOW() - INTERVAL '10 seconds' >= created_at) AS actualizar FROM user_data_spotify WHERE user_name = $1;`;
+    const queryTextFirst = `SELECT data, (NOW() - INTERVAL '${process.env.UPDATE_DAYS || "2 days"}' >= created_at) AS actualizar FROM user_data_spotify WHERE user_name = $1;`;
     const queryValuesFirst = [user_name];
     const dbResponse = await pool.query(queryTextFirst, queryValuesFirst);
     const actualizar = dbResponse.rows[0].actualizar;

@@ -47,7 +47,7 @@ export async function GET(req, res) {
 
     // Conectar a PostgreSQL y realizar la consulta
     const client = await pool.connect();
-    const queryText = `SELECT data, (NOW() - INTERVAL '10 seconds' >= created_at) AS actualizar FROM user_data_spotify WHERE user_name = $1;`;
+    const queryText = `SELECT data, (NOW() - INTERVAL '${process.env.UPDATE_DAYS || "2 days"}' >= created_at) AS actualizar FROM user_data_spotify WHERE user_name = $1;`;
     const queryValues = [userId];
     const dbResponse = await client.query(queryText, queryValues);
     let data;
