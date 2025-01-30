@@ -48,8 +48,8 @@ export default function HomePage() {
         router.push("/");
         return;
       }
-      const accessToken = Cookies.get("spotify_access_token");
-      if (accessToken) {
+      if (Cookies.get("spotify_access_token")) {
+        setAccessToken(Cookies.get("spotify_access_token"));
         setCheckedAuth(true);
         return;
       }
@@ -67,6 +67,8 @@ export default function HomePage() {
             "Access token refreshed",
             Cookies.get("spotify_access_token")
           );
+    
+          setAccessToken(Cookies.get("spotify_access_token"));
           setCheckedAuth(true);
         } catch (error) {
           console.error("Error fetching access token:", error);
