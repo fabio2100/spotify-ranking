@@ -67,8 +67,10 @@ export default function HomePage() {
             "Access token refreshed",
             Cookies.get("spotify_access_token")
           );
-    
+
           setAccessToken(Cookies.get("spotify_access_token"));
+          Cookies.set("user_name", user_name, { expires: 7 });
+          Cookies.set("spotify_refresh_token", refreshToken, { expires: 7 });
           setCheckedAuth(true);
         } catch (error) {
           console.error("Error fetching access token:", error);
@@ -87,7 +89,7 @@ export default function HomePage() {
       if (!userName) {
         setError("User name cookie is missing");
         return;
-      }    
+      }
       try {
         const response = await axios.post("/api/userTracks", {
           user_name: userName,

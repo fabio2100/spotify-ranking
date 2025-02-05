@@ -21,31 +21,42 @@ export default function Home() {
   const router = useRouter();
 
   const checkAuth = async () => {
-    const user_name = Cookies.get('user_name');
-    if(!user_name){
-      setIsLoading(false)
+    const user_name = Cookies.get("user_name");
+    if (!user_name) {
+      setIsLoading(false);
       return;
     }
-    const accessToken = Cookies.get('spotify_access_token');
+    const accessToken = Cookies.get("spotify_access_token");
     if (accessToken) {
-      router.push('/home');
+      router.push("/home");
       return;
     }
-
-    const refreshToken = Cookies.get('spotify_refresh_token');
+    const refreshToken = Cookies.get("spotify_refresh_token");
     if (refreshToken) {
       try {
-        const response = await axios.post('/api/refreshToken', {
-          refresh_token: refreshToken
+        const response = await axios.post("/api/refreshToken", {
+          refresh_token: refreshToken,
         });
-        Cookies.set('spotify_access_token', response.data.access_token, {expires:1/24});
-        router.push('/home');
+        if (response.data.access_token) {
+          Cookies.set("spotify_access_token", response.data.access_token, {
+            expires: 1 / 24,
+          });
+          const userName = Cookies.get("user_name");
+          Cookies.set("user_name", userName, { expires: 7 });
+          Cookies.set("spotify_refresh_token", refreshToken, { expires: 7 });
+          router.push("/home");
+        } else {
+          Cookies.remove("spotify_refresh_token");
+          setIsLoading(false);
+        }
       } catch (error) {
-        console.error('Error fetching access token:', error);
+        console.error("Error fetching access token:", error);
+        // Eliminar la cookie si hubo un error en la solicitud
+        Cookies.remove("spotify_refresh_token");
         setIsLoading(false);
       }
-    }else{
-      setIsLoading(false)
+    } else {
+      setIsLoading(false);
     }
   };
 
