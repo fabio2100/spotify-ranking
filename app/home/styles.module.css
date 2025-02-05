@@ -37,3 +37,24 @@
 .playIcon{
   display: none;
 }
+
+.logout {
+  cursor: pointer;
+  color: #0BAD02;
+  font-weight: bold;
+}
+
+.header .logout:hover {
+  color: #09a201;
+}
+
+.header .logout:hover {
+  color: #09a201;
+}
+
+.header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}

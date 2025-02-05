@@ -226,6 +226,14 @@ export default function HomePage() {
     );
   };
 
+  
+  const handleLogout = () => {
+    Cookies.remove("spotify_access_token");
+    Cookies.remove("spotify_refresh_token");
+    Cookies.remove("user_name");
+    router.push("/");
+  };
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
@@ -233,7 +241,14 @@ export default function HomePage() {
         {error && <p>Error: {error}</p>}
         {spotifyData ? (
           <div className={styles.divMain}>
-            <h2>Spotify Data</h2>
+            <div className={styles.header}>
+        <h2 style={{ marginTop: ".5em", marginBottom: "0.25em" }}>
+          Spotify Data
+        </h2>
+        <p className={styles.logout} onClick={handleLogout}>
+          Logout
+        </p>
+      </div>
             <div className={styles.divSelects}>
               <select
                 className={styles.select}
