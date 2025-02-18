@@ -16,6 +16,7 @@ const darkTheme = createTheme({
 });
 
 export default function Home() {
+  //v 1.0
   const [isLoading, setIsLoading] = useState(true);
   const [loadingButton, setLoadingButton] = useState(false);
   const router = useRouter();
