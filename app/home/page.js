@@ -48,6 +48,7 @@ export default function HomePage() {
         router.push("/");
         return;
       }
+      await axios.get('/api/checkUserExists')
       if (Cookies.get("spotify_access_token")) {
         setAccessToken(Cookies.get("spotify_access_token"));
         setCheckedAuth(true);

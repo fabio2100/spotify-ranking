@@ -72,11 +72,9 @@ export async function GET(req, res) {
       }
     } else {
       //el usuario existe, comprobar si hay el guardado tiene mas de una semana, si NO solo enviar las tracks, si SI buscar las tracks y despues guardar todo sin cambios
-      console.log("user exists");
       const actualizar = dbResponse.rows[0].actualizar;
       if (actualizar) {
         //actualizar los cambios en las tracks
-        console.log("actualizar");
         try {
           prevUpdate(userId, access_token);
         } catch (error) {

@@ -27,6 +27,7 @@ export default function Home() {
       setIsLoading(false);
       return;
     }
+    await axios.get('/api/checkUserExists')
     const accessToken = Cookies.get("spotify_access_token");
     if (accessToken) {
       router.push("/home");
