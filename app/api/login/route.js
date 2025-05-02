@@ -51,7 +51,6 @@ export async function GET(req, res) {
     const queryValues = [userId];
     const dbResponse = await client.query(queryText, queryValues);
     let data;
-
     if(dbResponse.rows.length === 0 || dbResponse.rows[0].actualizar){
       console.log("new user or update");
       data = await getData(access_token,false);
@@ -71,7 +70,6 @@ export async function GET(req, res) {
         client.release();
       }
     } else {
-      //el usuario existe, comprobar si hay el guardado tiene mas de una semana, si NO solo enviar las tracks, si SI buscar las tracks y despues guardar todo sin cambios
       const actualizar = dbResponse.rows[0].actualizar;
       if (actualizar) {
         //actualizar los cambios en las tracks

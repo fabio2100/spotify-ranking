@@ -19,9 +19,12 @@ export async function POST(req) {
     const queryValuesFirst = [user_name];
     const dbResponse = await pool.query(queryTextFirst, queryValuesFirst);
     const actualizar = dbResponse.rows[0].actualizar;
+    console.log({actualizar})
     if(actualizar){
       prevUpdate(user_name,access_token);
+      console.log('si actualiza esto va primero')
     }
+    console.log('y esto va despues')
     const queryText = 'SELECT data FROM user_data_spotify WHERE user_name = $1';
     const queryValues = [user_name];
 
