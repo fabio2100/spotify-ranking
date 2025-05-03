@@ -10,7 +10,7 @@ const pool = new Pool({
 });
 
 if (process.env.DEVELOPMENT === "0") {
-    poolConfig.ssl = {
+    pool.ssl = {
         rejectUnauthorized: false      // Si utilizas un certificado auto-firmado, establece esta opción a false
     };
 }
