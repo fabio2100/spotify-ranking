@@ -117,6 +117,16 @@ export default function HomePage() {
       const data = spotifyData[key];
       setKey(key);
 
+      // Verificar si data está vacío
+      if (!data || data.length === 0) {
+        setItemsData([]);
+        setIsLoading(false);
+        setTimeout(() => {
+          setUnabledRequest(false);
+        }, 2000);
+        return;
+      }
+
       const requests = data.map((item) => {
         const id = item[0];
         const url =
@@ -160,8 +170,23 @@ export default function HomePage() {
   };
 
   const renderList = () => {
-    if (!itemsData.length || isLoading)
+    if (isLoading) {
       return <CircularProgress color="success" />;
+    }
+    
+    if (!itemsData.length) {
+      return (
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '2rem', 
+          color: '#ffffff',
+          fontSize: '1.2rem' 
+        }}>
+          Sin data
+        </div>
+      );
+    }
+    
     return (
       <>
         <List>
