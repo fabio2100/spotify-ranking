@@ -200,7 +200,7 @@ export default function HomePage() {
             let iconToShow;
             switch (valueAEvaluar) {
               case false:
-                iconToShow = <FiberNew />;
+                iconToShow = <FiberNew style={{color: "#FFD700" }}/>;
                 break;
               case 0:
                 iconToShow = <FaEquals />;
