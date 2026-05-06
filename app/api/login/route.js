@@ -52,18 +52,15 @@ export async function GET(req, res) {
     const dbResponse = await client.query(queryText, queryValues);
     let data;
     if(dbResponse.rows.length === 0 || dbResponse.rows[0].actualizar){
-      console.log("new user or update");
       data = await getData(access_token,false);
     }
 
     if (dbResponse.rows.length === 0) {
-      console.log("new user");
       try {
         const queryText =
           "INSERT INTO user_data_spotify (user_name, data) VALUES ($1, $2) RETURNING *";
         const queryValues = [userId, JSON.stringify(data)];
         const res = await client.query(queryText, queryValues);
-        console.log("Inserted:", res.rows[0]);
       } catch (error) {
         console.error("Error inserting data:", error);
       } finally {

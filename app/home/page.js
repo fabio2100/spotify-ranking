@@ -27,6 +27,20 @@ const darkTheme = createTheme({
   },
 });
 
+const timeFormat = (objTime) => {
+  if (objTime.days === 0 && objTime.hours === 0 && objTime.minutes === 0) {
+    return "Recién";
+  }
+  const units = [
+    { value: objTime.days, label: "d" },
+    { value: objTime.hours, label: "h" },
+    { value: objTime.minutes, label: "m" },
+    { value: objTime.seconds, label: "s" },
+  ];
+  const nonZero = units.filter((u) => u.value !== 0).slice(0, 2);
+  return nonZero.map((u) => `${u.value} ${u.label}`).join(" ");
+}
+
 export default function HomePage() {
   const router = useRouter();
   const [spotifyData, setSpotifyData] = useState(null);
@@ -40,6 +54,7 @@ export default function HomePage() {
   const [key, setKey] = useState("tracksShort");
   const [checkedAuth, setCheckedAuth] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -64,11 +79,7 @@ export default function HomePage() {
           Cookies.set("spotify_access_token", response.data.access_token, {
             expires: 1 / 24,
           });
-          console.log(
-            "Access token refreshed",
-            Cookies.get("spotify_access_token")
-          );
-
+          
           setAccessToken(Cookies.get("spotify_access_token"));
           Cookies.set("user_name", user_name, { expires: 7 });
           Cookies.set("spotify_refresh_token", refreshToken, { expires: 7 });
@@ -97,6 +108,10 @@ export default function HomePage() {
           access_token: Cookies.get("spotify_access_token"),
         });
         setSpotifyData(response.data);
+        const last_update_response = await axios.post("/api/last_update", {
+          user_name: userName,
+        });
+        setLastUpdate(timeFormat(last_update_response.data));
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("Failed to fetch data");
@@ -107,6 +122,7 @@ export default function HomePage() {
       setDataFetched(true);
     }
   }, [checkedAuth]);
+
 
   useEffect(() => {
     const fetchItemData = async () => {
@@ -271,6 +287,10 @@ export default function HomePage() {
         <h2 style={{ marginTop: ".5em", marginBottom: "0.25em" }}>
           Spotify Data
         </h2>
+        <small style={{ color: "#888", marginBottom: "0.5em" }}>
+          Última actualización:{" "}
+          {lastUpdate !== null ? lastUpdate : "Cargando..."}
+        </small>
         <p className={styles.logout} onClick={handleLogout}>
           Logout
         </p>
