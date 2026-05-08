@@ -28,7 +28,7 @@ const darkTheme = createTheme({
 });
 
 const timeFormat = (objTime) => {
-  if (objTime.days === 0 && objTime.hours === 0 && objTime.minutes === 0) {
+  if (!objTime.days && !objTime.hours && !objTime.minutes) {
     return "Recién";
   }
   const units = [
@@ -37,7 +37,7 @@ const timeFormat = (objTime) => {
     { value: objTime.minutes, label: "m" },
     { value: objTime.seconds, label: "s" },
   ];
-  const nonZero = units.filter((u) => u.value !== 0).slice(0, 2);
+  const nonZero = units.filter((u) => u.value).slice(0, 2);
   return nonZero.map((u) => `${u.value} ${u.label}`).join(" ");
 }
 
@@ -111,7 +111,6 @@ export default function HomePage() {
         const last_update_response = await axios.post("/api/last_update", {
           user_name: userName,
         });
-        console.log(last_update_response.data);
         setLastUpdate(timeFormat(last_update_response.data));
       } catch (error) {
         console.error("Error fetching data:", error);
