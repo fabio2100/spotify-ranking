@@ -111,6 +111,7 @@ export default function HomePage() {
         const last_update_response = await axios.post("/api/last_update", {
           user_name: userName,
         });
+        console.log(last_update_response.data);
         setLastUpdate(timeFormat(last_update_response.data));
       } catch (error) {
         console.error("Error fetching data:", error);
